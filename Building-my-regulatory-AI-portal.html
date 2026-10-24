@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NAFDAC / Global Regulatory - Formulation Suitability Analyzer</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap">
+      <div class="brand">
+        <div class="logo">Rx</div>
+        <div>
+          <h1>Formulation Suitability Analyzer</h1>
+          <p>NAFDAC • FDA • EMA • WHO • For Public and Patients</p>
+        </div>
+      </div>
+      <div class="id-badge" id="analysisId">ID: NOT STARTED</div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="intro">
+      <h2>Understand if your medicine's ingredients match its claimed use</h2>
+      <p>Upload the product label (carton/blister) and the PIL / Insert / Leaflet separately. Each time a new file is uploaded, the latest complete pair is analyzed automatically. The interface reads the ingredients, the indication, and predicts suitability and safety for human use — in clear, practical language.</p>
+      <div class="steps">
+        <div><span>1</span> Upload Label + PIL</div>
+        <div><span>2</span> Confirm Extraction</div>
+        <div><span>3</span> RL Prediction</div>
+        <div><span>4</span> Safety & Regulatory Verdict</div>
+      </div>
+    </section>
+
+    <section class="upload-grid">
+      <div class="card upload" id="labelCard">
+        <h3>① Product Label Portal</h3>
+        <p class="hint">Carton / Blister / Strip. PDF, JPG, PNG — max 2GB</p>
+        <div class="drop" id="labelDrop">
+          <input type="file" id="labelFile" accept=".pdf,.jpg,.jpeg,.png" hidden />
+          <div class="drop-icon">📦</div>
+          <p><b>Drag & drop Label here</b> or click to browse</p>
+          <small id="labelInfo">No file chosen</small>
+        </div>
+        <div class="preview" id="labelPreview"></div>
+      </div>
+
+      <div class="card upload" id="pilCard">
+        <h3>② PIL / Insert / Leaflet Portal</h3>
+        <p class="hint">Side 1 & 2. PDF, JPG, PNG — max 2GB</p>
+        <div class="drop" id="pilDrop">
+          <input type="file" id="pilFile" accept=".pdf,.jpg,.jpeg,.png" hidden />
+          <div class="drop-icon">📄</div>
+          <p><b>Drag & drop PIL here</b> or click to browse</p>
+          <small id="pilInfo">No file chosen</small>
+        </div>
+        <div class="preview" id="pilPreview"></div>
+      </div>
+    </section>
+
+    <section class="action-row">
+      <button id="analyzeBtn" disabled>Analyze Formulation vs Indication</button>
+      <button id="resetBtn" class="secondary">Analyze New Pair (Unique ID)</button>
+      <span id="statusMsg"></span>
+    </section>
+
+    <section class="progress" id="progressBar">
+      <div class="step active" data-s="1">OCR & Extract</div>
+      <div class="step" data-s="2">Indication Mapping</div>
+      <div class="step" data-s="3">RL Suitability</div>
+      <div class="step" data-s="4">Safety & NAFDAC Check</div>
+    </section>
+
+    <section id="results" class="results hidden">
+      <div class="grid-2">
+        <div class="card">
+          <h3>A. Ingredient Summary (Extracted)</h3>
+          <p class="sub">Editable — ensures each upload is processed uniquely</p>
+          <table id="ingTable">
+            <thead><tr><th>Name</th><th>Qty</th><th>Role</th><th>Pharmacopeia</th></tr></thead>
+            <tbody></tbody>
+          </table>
+          <h4>Manufacturer & Storage</h4>
+          <div class="kv" id="metaBox"></div>
+        </div>
+        <div class="card">
+          <h3>B. Indication List</h3>
+          <p class="sub">From PIL/Leaflet</p>
+          <ul id="indList"></ul>
+          <h4>Dosage Snapshot</h4>
+          <div id="dosageBox" class="mono"></div>
+        </div>
+      </div>
+
+      <div class="card highlight">
+        <h3>C. Is this formulation suitable for the claimed indication?</h3>
+        <div class="score-row">
+          <div class="score-circle" id="scoreCircle">—</div>
+          <div>
+            <div id="suitabilityLabel" class="big"></div>
+            <p id="suitabilityExplain" class="explain"></p>
+            <div class="tags" id="reasonTags"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <h3>D. Safety for Human Use — Traffic Light</h3>
+          <div id="safetyGrid"></div>
+        </div>
+        <div class="card">
+          <h3>E. Regulatory Verdict</h3>
+          <div id="regulatoryBox"></div>
+        </div>
+      </div>
+
+      <div class="card patient">
+        <h3>F. Patient-Friendly Takeaway (Public & Patients)</h3>
+        <ol id="patientList"></ol>
+        <div class="refs">
+          <b>References checked:</b> NAFDAC Registration Guidelines 2024, NAFDAC Labelling Regs 2021, NAFDAC Safety Alert on Sunset Yellow, WHO Essential Medicines List 2023, FDA Orange Book – Cefuroxime, EMA Assessment Report.
+        </div>
+      </div>
+    </section>
+
+    <section class="how">
+      <h3>How this RL-type logic works</h3>
+      <p>We simulate Reinforcement Learning: <code>State</code> = ingredients + indication + dose; <code>Action</code> = Suitable / Not; <code>Reward</code> = higher when spectrum covers target pathogens and dose within NAFDAC/FDA limits.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap foot">
+      <div><b>Disclaimer:</b> Educational only. Does not replace medical advice. Always check NAFDAC Reg. No., batch, expiry.</div>
+      <div class="tiny">Client-side only • No data leaves browser • 2GB limit • Unique ID per upload</div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+  <script src="area-capture.js"></script>
+</body>
+</html>
